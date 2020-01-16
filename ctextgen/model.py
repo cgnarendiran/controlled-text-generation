@@ -294,7 +294,7 @@ class RNN_VAE(nn.Module):
             y = self.decoder_fc(output).view(-1)
             y = F.softmax(y/temp, dim=0)
 
-            idx = torch.multinomial(y)
+            idx = torch.multinomial(y,1)
 
             word = Variable(torch.LongTensor([int(idx)]))
             word = word.cuda() if self.gpu else word
@@ -399,7 +399,7 @@ class RNN_VAE(nn.Module):
         # Sample masks: elems with val 1 will be set to <unk>
         mask = torch.from_numpy(
             np.random.binomial(1, p=self.p_word_dropout, size=tuple(data.size()))
-                     .astype('uint8')
+                     .astype('bool')
         )
 
         if self.gpu:
